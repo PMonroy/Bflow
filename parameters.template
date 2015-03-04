@@ -1,0 +1,21 @@
+# Parameters ROMS
+
+# start date 
+
+  year_start : 
+  month_start : 
+  day_start : 
+
+# period of data
+
+  period : 
+
+# path to dir of ROMS files
+
+  pathroms :
+
+# spatial dimensions of roms data arrays  
+
+  ximax : 
+  etamax :
+  smax : 
