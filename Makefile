@@ -2,7 +2,7 @@ CC=gcc
 CFLAGS=-O2 -Wall -mcmodel=medium
 LIBS = -lm -L/usr/local/netcdf/lib -lnetcdf
 RM=rm -rf
-OUT=test
+OUT=test.out
 PARAMS=parameters.in
 
 all: build

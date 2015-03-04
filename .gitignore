@@ -1,4 +1,5 @@
 # Object files
+*.out
 *.o
 *.ko
 *.obj
@@ -28,5 +29,7 @@
 *.x86_64
 *.hex
 
+# Parameters file
+*.in
 #Emacs backups
 *~
