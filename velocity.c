@@ -1,23 +1,28 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <string.h>
 #include <netcdf.h>
 
 #include "velocity.h"
 #include "memalloc.h"
 
+typedef struct ncdim_st{
+  char name[NC_MAX_NAME+1];
+  size_t length;
+} ncdim;
+
 //Extern variables
 extern date dstart;   // nº 0, 1, 2 
 extern int period;    // nº 3
 extern char *pathroms;  // nº 4
-extern int ximax;     // nº 5
-extern int etamax;    // nº 6
-extern int smax;      // nº 7
 
 double *mu;
 double *phi;
 double ****dpt;
 vector ****vroms;
+
+size_t tmax, smax, ximax, xiumax, etamax, etavmax;
 
 void print_error(int ncf)
 {
@@ -26,7 +31,9 @@ void print_error(int ncf)
 
 int ncdump(void )
 {
-  char ncfile[255];        // Name of the nc file 
+  char ncfile[NC_MAX_NAME+128];        // Name of the nc file 
+  ncdim *dim;
+  int ndim;
   int ncID;                      // netCDF ID for the file
   int lonID;                // netCDF ID for the variables
   int latID;
@@ -34,9 +41,6 @@ int ncdump(void )
   int uID;
   int vID;
   int wID;
-
-  int xiumax = ximax-1;
-  int etavmax = etamax-1;
 
   static size_t start2D[2];
   static size_t count2DLON[2];
@@ -52,7 +56,7 @@ int ncdump(void )
   int count, sum_count;
   int ncflag; //Error handling.
 
-  int s, xi, eta; //Loop index
+  int i, s, xi, eta; //Loop index
   int t, tstart, tend;
   date tdate;
 
@@ -64,8 +68,54 @@ int ncdump(void )
   double *w;
   
   size_t nrho, nu, nv;
-
   int sml, ml, smlu, mlu, smvl, mvl;
+
+  /* Open the nc file at initial date */
+  sprintf(ncfile,"%sextract_roms_avg_Y%dM%d.nc.1", pathroms, dstart.year, dstart.month);  
+  if((ncflag = nc_open(ncfile, NC_NOWRITE, &ncID)))
+    {
+      print_error(ncflag);
+      return 1;
+    }
+
+  /* Read the dimensions*/      
+  if((ncflag = nc_inq_ndims(ncID, &ndim)))
+    {
+      print_error(ncflag);
+      return 1;
+    }
+  dim = (ncdim*) malloc(ndim*sizeof(ncdim));
+  for(i=0; i<ndim; i++)
+    {
+      if((ncflag = nc_inq_dim(ncID, i, dim[i].name, &dim[i].length)))
+	{
+	  print_error(ncflag);
+	  return 1;
+	}
+      printf("%s %lu %d\n",dim[i].name,dim[i].length,strcmp(dim[i].name,"xi_rho"));
+    }
+
+  for(i=0; i<ndim; i++)
+    {
+      if(strcmp(dim[i].name,"xi_rho")==0)
+	ximax = dim[i].length;
+      else if(strcmp(dim[i].name,"xi_u")==0)
+	xiumax = dim[i].length;
+      else if(strcmp(dim[i].name,"eta_rho")==0)
+	etamax = dim[i].length;
+      else if(strcmp(dim[i].name,"eta_v")==0)
+	etavmax = dim[i].length;
+      else if(strcmp(dim[i].name,"s_rho")==0)
+	smax = dim[i].length;
+      else if(strcmp(dim[i].name,"time")==0)
+	tmax = dim[i].length;
+      else
+	{
+	  printf("Unknown dimension\n");
+	  return 1;
+	}
+    }
+  free(dim);
 
   /* Initialize size_t variables:*/
 
@@ -99,21 +149,13 @@ int ncdump(void )
    countv4D[0] = 0;
    countv4D[1] = smax;
    countv4D[2] = etavmax;
-   countv4D[3] =  ximax;
+   countv4D[3] = ximax;
 
    stride4D[0] = 1;
    stride4D[1] = 1;
    stride4D[2] = 1;
    stride4D[3] = 1;
 
-  /* Open the file. NC_NOWRITE tells netCDF we want read-only access
-   * to the file.*/
-  sprintf(ncfile,"%sextract_roms_avg_Y%dM%d.nc.1", pathroms, dstart.year, dstart.month);  
-  if((ncflag = nc_open(ncfile, NC_NOWRITE, &ncID)))
-    {
-      print_error(ncflag);
-      return 1;
-    }
   /* Get the varid of the data variable, based on its name. */
   if((ncflag = nc_inq_varid(ncID, "lon_rho", &lonID)))
     {

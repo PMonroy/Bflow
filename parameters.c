@@ -19,19 +19,13 @@ parameter_st param[]={
   { "month_start", "int", NULL },
   { "day_start", "int", NULL },
   { "period", "int", NULL },
-  { "pathroms", "char", NULL },
-  { "ximax", "int", NULL },
-  { "etamax", "int", NULL },
-  { "smax", "int", NULL }
+  { "pathroms", "char", NULL }
 }; 
 int np = sizeof(param)/sizeof(parameter_st);
 
 date dstart;   // nº 0, 1, 2 
 int period;    // nº 3
 char *pathroms;  // nº 4
-int ximax;     // nº 5
-int etamax;    // nº 6
-int smax;      // nº 7
 
 void listofparameters(void )
 {
@@ -117,15 +111,6 @@ int readinparameters(FILE *input)
 	  break;
 	case 4:
 	  pathroms = param[i].value;
-	  break;
-	case 5:
-	  ximax = atoi(param[i].value); 
-	  break;
-	case 6:
-	  etamax = atoi(param[i].value); 
-	  break;
-	case 7:
-	  smax = atoi(param[i].value); 
 	  break;
 	}
     }
