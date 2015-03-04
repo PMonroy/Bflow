@@ -26,8 +26,8 @@ parameters.o: parameters.c parameters.h date.h
 memalloc.o: memalloc.c memalloc.h
 	$(CC) $(CFLAGS) -c memalloc.c
 
-$(PARAMS): template_parameters.in
+$(PARAMS): parameters.template
 	touch $(PARAMS)
-	cat template_parameters.in > $(PARAMS)
+	cat parameters.template > $(PARAMS)
 clean:
 	$(RM) *.o $(OUT)
