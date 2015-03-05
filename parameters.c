@@ -23,18 +23,17 @@ parameter_st param[]={
 }; 
 int np = sizeof(param)/sizeof(parameter_st);
 
-date dstart;   // nº 0, 1, 2 
-int period;    // nº 3
-char *pathroms;  // nº 4
+date dstart;  
+int period;   
+char *pathroms; 
 
 void listofparameters(void )
 {
   int i;
-  printf(" (Name) (Type)\n");
 
+  printf(" (Name) (Type)\n");
   for(i=0; i<np; i++)
     printf(" %s : %s\n", param[i].name, param[i].type);
-
 }
 
 int readinparameters(FILE *input)
@@ -95,7 +94,22 @@ int readinparameters(FILE *input)
 
   for(i=0; i<np; i++) 
     {
-      switch (i) 
+      if(strcmp(param[i].name,"year_start")==0)
+	dstart.year = atoi(param[i].value); 
+      else if(strcmp(param[i].name,"month_start")==0)
+	dstart.month = atoi(param[i].value); 
+      else if(strcmp(param[i].name,"day_start")==0)
+	dstart.day = atoi(param[i].value); 
+      else if(strcmp(param[i].name,"period")==0)
+	period = atoi(param[i].value); 
+      else if(strcmp(param[i].name,"pathroms")==0)
+	pathroms = param[i].value; 
+      else
+	{
+	  printf("Unknown parameter\n");
+	  return 1;
+	}
+      /*      switch (i) 
 	{
 	case 0:
 	  dstart.year = atoi(param[i].value); 
@@ -112,7 +126,7 @@ int readinparameters(FILE *input)
 	case 4:
 	  pathroms = param[i].value;
 	  break;
-	}
+	  }*/
     }
 
   free(pflag);

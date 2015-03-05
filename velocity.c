@@ -92,7 +92,6 @@ int ncdump(void )
 	  print_error(ncflag);
 	  return 1;
 	}
-      printf("%s %lu %d\n",dim[i].name,dim[i].length,strcmp(dim[i].name,"xi_rho"));
     }
 
   for(i=0; i<ndim; i++)
