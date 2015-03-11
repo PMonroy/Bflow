@@ -31,5 +31,10 @@
 
 # Parameters file
 *.in
-#Emacs backups
+
+# Emacs backups
 *~
+
+# Data files
+
+*.dat

@@ -17,12 +17,14 @@ extern date dstart;   // nº 0, 1, 2
 extern int period;    // nº 3
 extern char *pathroms;  // nº 4
 
+//Global variables 
 double *mu;
 double *phi;
 double ****dpt;
 vector ****vroms;
-
 size_t tmax, smax, ximax, xiumax, etamax, etavmax;
+
+
 
 void print_error(int ncf)
 {
@@ -92,7 +94,6 @@ int ncdump(void )
 	  print_error(ncflag);
 	  return 1;
 	}
-      printf("%s %lu %d\n",dim[i].name,dim[i].length,strcmp(dim[i].name,"xi_rho"));
     }
 
   for(i=0; i<ndim; i++)
@@ -193,8 +194,7 @@ int ncdump(void )
       return 1;
     }  
 
-  /* Transformation from lon[] lat[] to phi[] mu[]*/
- 
+  /* Transformation from lon[] lat[] to phi[] mu[]*/ 
   if((phi = mkdarray1D(ximax)) == NULL)
       return 1;
 

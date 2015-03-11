@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "parameters.h"
+#include "date.h"
 
 #define SHORTSTRING 128
 #define LONGSTRING 256
@@ -19,22 +19,23 @@ parameter_st param[]={
   { "month_start", "int", NULL },
   { "day_start", "int", NULL },
   { "period", "int", NULL },
-  { "pathroms", "char", NULL }
+  { "pathroms", "char", NULL },
+  { "iptfile", "char", NULL }
 }; 
 int np = sizeof(param)/sizeof(parameter_st);
 
-date dstart;   // nº 0, 1, 2 
-int period;    // nº 3
-char *pathroms;  // nº 4
+date dstart;  
+int period;   
+char *pathroms; 
+char *iptfile;
 
 void listofparameters(void )
 {
   int i;
-  printf(" (Name) (Type)\n");
 
+  printf(" (Name) (Type)\n");
   for(i=0; i<np; i++)
     printf(" %s : %s\n", param[i].name, param[i].type);
-
 }
 
 int readinparameters(FILE *input)
@@ -95,23 +96,28 @@ int readinparameters(FILE *input)
 
   for(i=0; i<np; i++) 
     {
-      switch (i) 
+      if(pflag[i]==0)
 	{
-	case 0:
-	  dstart.year = atoi(param[i].value); 
-	  break;
-	case 1:
-	  dstart.month = atoi(param[i].value); 
-	  break;
-	case 2:
-	  dstart.day = atoi(param[i].value); 
-	  break;
-	case 3:
-	  period = atoi(param[i].value); 
-	  break;
-	case 4:
-	  pathroms = param[i].value;
-	  break;
+	  printf("Parameter %s not defined\n", param[i].name);
+	  return 1;
+	}
+
+      if(strcmp(param[i].name,"year_start")==0)
+	dstart.year = atoi(param[i].value); 
+      else if(strcmp(param[i].name,"month_start")==0)
+	dstart.month = atoi(param[i].value); 
+      else if(strcmp(param[i].name,"day_start")==0)
+	dstart.day = atoi(param[i].value); 
+      else if(strcmp(param[i].name,"period")==0)
+	period = atoi(param[i].value); 
+      else if(strcmp(param[i].name,"pathroms")==0)
+	pathroms = param[i].value; 
+      else if(strcmp(param[i].name,"iptfile")==0)
+	iptfile = param[i].value; 
+      else
+	{
+	      printf("Unknown parameter\n");
+	      return 1;	    
 	}
     }
 

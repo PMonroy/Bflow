@@ -5,13 +5,9 @@
 
 #include "velocity.h"
 #include "parameters.h"
+#include "coordinates.h"
 
-extern date dstart;   // nº 0, 1, 2 
-extern int period;    // nº 3
-extern char *pathroms;  // nº 4
-extern int ximax;     // nº 5
-extern int etamax;    // nº 6
-extern int smax;      // nº 7
+extern char *iptfile;
 
 void print_usage(char *me) 
 {
@@ -27,7 +23,15 @@ int main(int argc, char * argv[])
   int iflag=0;
   char *ifilename=NULL; 
   FILE *input;
+  
+  FILE *ipt;
+  int np = 0;
+  char line[1024];
 
+  geo_coord *geo_pt;
+  sph_coord *sph_pt;
+  int q;
+  
   // COMMAND LINE PARAMETERS
   me = argv[0];
   if (3 != argc)
@@ -63,9 +67,44 @@ int main(int argc, char * argv[])
   }
   fclose(input);
 
+  // READ INITIAL POSITIONS
+  if((ipt=fopen(iptfile,"r"))==NULL)
+    {
+      printf("Error: File %s doesn't exist\n",iptfile);
+      return 1;
+    }
+  while(fgets(line,sizeof(line),ipt) != NULL)
+    np++;
+
+  printf("number of points %d\n",np);
+  
+  geo_pt=(geo_coord *) malloc(np*sizeof(geo_coord));
+  if(geo_pt == NULL)
+    return 1;
+
+  sph_pt=(sph_coord *) malloc(np*sizeof(sph_coord));
+  if(sph_pt == NULL)
+    return 1;
+
+  /* Read the initial positions */
+  rewind(ipt);
+  for(q=0; q<np; q++)
+    {
+      if(fscanf(ipt,"%lf %lf %lf", &(geo_pt[q].lon), &(geo_pt[q].lat), &(geo_pt[q].dpt))==EOF)
+	{
+	  printf("incorrect number of lines in the file %s\n", iptfile);
+	  return 1;
+	}
+      GEO_TO_SPH_COORD(sph_pt[q],geo_pt[q]);
+    }
+  fclose(ipt);
+
+  //Ïnitialize velocity module
   if(ncdump())
     return 1;
 
+
+  //Reset velocity module
   resetgrid();
   return 1;
 }
