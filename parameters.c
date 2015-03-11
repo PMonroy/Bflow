@@ -27,7 +27,10 @@ int np = sizeof(param)/sizeof(parameter_st);
 date dstart;  
 int period;   
 char *pathroms; 
+<<<<<<< HEAD
 char *iptfile;
+=======
+>>>>>>> 0620b781bbf361796d2bd25fd82736a91da2a57e
 
 void listofparameters(void )
 {
@@ -101,7 +104,6 @@ int readinparameters(FILE *input)
 	  printf("Parameter %s not defined\n", param[i].name);
 	  return 1;
 	}
-
       if(strcmp(param[i].name,"year_start")==0)
 	dstart.year = atoi(param[i].value); 
       else if(strcmp(param[i].name,"month_start")==0)
@@ -118,6 +120,11 @@ int readinparameters(FILE *input)
 	{
 	      printf("Unknown parameter\n");
 	      return 1;	    
+	}
+      else
+	{
+	  printf("Unknown parameter\n");
+	  return 1;
 	}
     }
 
