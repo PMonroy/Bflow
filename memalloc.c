@@ -3,7 +3,7 @@
 
 #include "memalloc.h"
 
-double* mkdarray1D(size_t nt)
+double* mkdarray1D(unsigned long nt)
 /* Function: mkdarray1D
  * --------------------
  * 
@@ -26,7 +26,7 @@ double* mkdarray1D(size_t nt)
   return array;
 }
 
-double** mkdarray2D(size_t nt, size_t nx)
+double** mkdarray2D(unsigned long nt, unsigned long nx)
 /* Function: mkdarray2D
  * --------------------
  * 
@@ -40,7 +40,7 @@ double** mkdarray2D(size_t nt, size_t nx)
  */
 {
   double **array;
-  size_t t;
+  unsigned long t;
 
   array =(double **)malloc(nt*sizeof(double *));
   if(array == NULL)
@@ -60,7 +60,7 @@ double** mkdarray2D(size_t nt, size_t nx)
   return array;
 }
 
-double*** mkdarray3D(size_t nt, size_t nx, size_t ny)
+double*** mkdarray3D(unsigned long nt, unsigned long nx, unsigned long ny)
 /* Function: mkdarray3D
  * --------------------
  * 
@@ -75,7 +75,7 @@ double*** mkdarray3D(size_t nt, size_t nx, size_t ny)
  */
 {
   double ***array;
-  size_t t,i;
+  unsigned long t,i;
 
   array =(double ***)malloc(nt*sizeof(double **));
   if(array == NULL)
@@ -104,7 +104,7 @@ double*** mkdarray3D(size_t nt, size_t nx, size_t ny)
   return array;
 }
 
-double**** mkdarray4D(size_t nt, size_t nx, size_t ny, size_t nz)
+double**** mkdarray4D(unsigned long nt, unsigned long nx, unsigned long ny, unsigned long nz)
 /* Function: mkdarray4D
  * --------------------
  * 
@@ -120,7 +120,7 @@ double**** mkdarray4D(size_t nt, size_t nx, size_t ny, size_t nz)
  */
 {
   double ****array;
-  size_t t,i,j;
+  unsigned long t,i,j;
 
   array =(double ****)malloc(nt * sizeof(double ***));
   if(array == NULL)
@@ -169,7 +169,7 @@ void freedarray1D(double* array)
   free(array);
 }
 
-void freedarray2D(double** array, size_t nt)
+void freedarray2D(double** array, unsigned long nt)
 /* Function: freedarray2D
  * -----------------------
  * 
@@ -177,7 +177,7 @@ void freedarray2D(double** array, size_t nt)
  * 
  */
 {
-  size_t t;
+  unsigned long t;
 
   for (t = 0; t < nt; ++t) 
     free(array[t]);
@@ -185,7 +185,7 @@ void freedarray2D(double** array, size_t nt)
   free(array);
 }
 
-void freedarray3D(double*** array, size_t nt, size_t nx)
+void freedarray3D(double*** array, unsigned long nt, unsigned long nx)
 /* Function: freedarray3D
  * -----------------------
  * 
@@ -193,7 +193,7 @@ void freedarray3D(double*** array, size_t nt, size_t nx)
  * 
  */
 {
-  size_t t,i;
+  unsigned long t,i;
 
   for (t = 0; t < nt; ++t) 
     {
@@ -205,7 +205,7 @@ void freedarray3D(double*** array, size_t nt, size_t nx)
     }
     free(array);
 }
-void freedarray4D(double**** array, size_t nt, size_t nx, size_t ny)
+void freedarray4D(double**** array, unsigned long nt, unsigned long nx, unsigned long ny)
 /* Function: freedarray4D
  * -----------------------
  * 
@@ -213,7 +213,7 @@ void freedarray4D(double**** array, size_t nt, size_t nx, size_t ny)
  * 
  */
 {
-  size_t t,i,j;
+  unsigned long t,i,j;
 
   for (t = 0; t < nt; ++t) 
     {
@@ -228,7 +228,7 @@ void freedarray4D(double**** array, size_t nt, size_t nx, size_t ny)
   free(array);
 }
 
-int* mkiarray1D(size_t nt)
+int* mkiarray1D(unsigned long nt)
 /* Function: mkiarray1D
  * --------------------
  * 
@@ -251,7 +251,7 @@ int* mkiarray1D(size_t nt)
   return array;
 }
 
-int** mkiarray2D(size_t nt, size_t nx)
+int** mkiarray2D(unsigned long nt, unsigned long nx)
 /* Function: mkiarray2D
  * --------------------
  * 
@@ -265,7 +265,7 @@ int** mkiarray2D(size_t nt, size_t nx)
  */
 {
   int **array;
-  size_t t;
+  unsigned long t;
 
   array =(int **)malloc(nt*sizeof(int *));
   if(array == NULL)
@@ -285,7 +285,7 @@ int** mkiarray2D(size_t nt, size_t nx)
   return array;
 }
 
-int*** mkiarray3D(size_t nt, size_t nx, size_t ny)
+int*** mkiarray3D(unsigned long nt, unsigned long nx, unsigned long ny)
 /* Function: mkiarray3D
  * --------------------
  * 
@@ -300,7 +300,7 @@ int*** mkiarray3D(size_t nt, size_t nx, size_t ny)
  */
 {
   int ***array;
-  size_t t,i;
+  unsigned long t,i;
 
   array =(int ***)malloc(nt*sizeof(int **));
   if(array == NULL)
@@ -329,7 +329,7 @@ int*** mkiarray3D(size_t nt, size_t nx, size_t ny)
   return array;
 }
 
-int**** mkiarray4D(size_t nt, size_t nx, size_t ny, size_t nz)
+int**** mkiarray4D(unsigned long nt, unsigned long nx, unsigned long ny, unsigned long nz)
 /* Function: mkiarray4D
  * --------------------
  * 
@@ -345,7 +345,7 @@ int**** mkiarray4D(size_t nt, size_t nx, size_t ny, size_t nz)
  */
 {
   int ****array;
-  size_t t,i,j;
+  unsigned long t,i,j;
 
   array =(int ****)malloc(nt * sizeof(int ***));
   if(array == NULL)
@@ -394,7 +394,7 @@ void freeiarray1D(int* array)
   free(array);
 }
 
-void freeiarray2D(int** array, size_t nt)
+void freeiarray2D(int** array, unsigned long nt)
 /* Function: freeiarray2D
  * -----------------------
  * 
@@ -402,7 +402,7 @@ void freeiarray2D(int** array, size_t nt)
  * 
  */
 {
-  size_t t;
+  unsigned long t;
 
   for (t = 0; t < nt; ++t) 
     free(array[t]);
@@ -410,7 +410,7 @@ void freeiarray2D(int** array, size_t nt)
   free(array);
 }
 
-void freeiarray3D(int*** array, size_t nt, size_t nx)
+void freeiarray3D(int*** array, unsigned long nt, unsigned long nx)
 /* Function: freeiarray3D
  * -----------------------
  * 
@@ -418,7 +418,7 @@ void freeiarray3D(int*** array, size_t nt, size_t nx)
  * 
  */
 {
-  size_t t,i;
+  unsigned long t,i;
 
   for (t = 0; t < nt; ++t) 
     {
@@ -430,7 +430,7 @@ void freeiarray3D(int*** array, size_t nt, size_t nx)
     }
     free(array);
 }
-void freeiarray4D(int**** array, size_t nt, size_t nx, size_t ny)
+void freeiarray4D(int**** array, unsigned long nt, unsigned long nx, unsigned long ny)
 /* Function: freeiarray4D
  * -----------------------
  * 
@@ -438,7 +438,7 @@ void freeiarray4D(int**** array, size_t nt, size_t nx, size_t ny)
  * 
  */
 {
-  size_t t,i,j;
+  unsigned long t,i,j;
 
   for (t = 0; t < nt; ++t) 
     {
@@ -453,21 +453,21 @@ void freeiarray4D(int**** array, size_t nt, size_t nx, size_t ny)
     free(array);
 }
 
-size_t* mkstarray1D(size_t nt)
+unsigned long* mkularray1D(unsigned long nt)
 /* Function: mkstarray1D
  * --------------------
  * 
- * Allocates a size_t array with range [0,1,...,(nt-1)].
+ * Allocates a unsigned long array with range [0,1,...,(nt-1)].
  * 
  * nt = number of elements
  *
- * returns: return the posize_ter to the array allocation 
+ * returns: return the pounsigned longer to the array allocation 
  *          returns NULL on error (if it is out of memory)
  */
 {
-  size_t *array;
+  unsigned long *array;
   
-  array =(size_t *)malloc(nt*sizeof(size_t));
+  array =(unsigned long *)malloc(nt*sizeof(unsigned long));
   if(array == NULL)
     {
       printf("out of memory\n");
@@ -476,23 +476,23 @@ size_t* mkstarray1D(size_t nt)
   return array;
 }
 
-size_t** mkstarray2D(size_t nt, size_t nx)
+unsigned long** mkularray2D(unsigned long nt, unsigned long nx)
 /* Function: mkstarray2D
  * --------------------
  * 
- * Allocates a size_t array with range [0,1,...,(nt-1)][0,1,...,(nx-1)].
+ * Allocates a unsigned long array with range [0,1,...,(nt-1)][0,1,...,(nx-1)].
  * 
  * nt = number of elements
  * nx = number of elements 
  *
- * returns: return the posize_ter to the array allocation 
+ * returns: return the pounsigned longer to the array allocation 
  *          returns NULL on error (if it is out of memory)
  */
 {
-  size_t **array;
-  size_t t;
+  unsigned long **array;
+  unsigned long t;
 
-  array =(size_t **)malloc(nt*sizeof(size_t *));
+  array =(unsigned long **)malloc(nt*sizeof(unsigned long *));
   if(array == NULL)
     {
       printf("out of memory\n");
@@ -500,7 +500,7 @@ size_t** mkstarray2D(size_t nt, size_t nx)
     }
   for(t = 0; t < nt; t++)
     {
-      array[t] = (size_t *)malloc(nx*sizeof(size_t));
+      array[t] = (unsigned long *)malloc(nx*sizeof(unsigned long));
       if(array[t] == NULL)
 	{
 	  printf("out of memory\n");
@@ -510,24 +510,24 @@ size_t** mkstarray2D(size_t nt, size_t nx)
   return array;
 }
 
-size_t*** mkstarray3D(size_t nt, size_t nx, size_t ny)
+unsigned long*** mkularray3D(unsigned long nt, unsigned long nx, unsigned long ny)
 /* Function: mkstarray3D
  * --------------------
  * 
- * Allocates a size_t array with range [0,1,...,(nt-1)][0,1,...,(nx-1)][0,1,...,(ny-1)].
+ * Allocates a unsigned long array with range [0,1,...,(nt-1)][0,1,...,(nx-1)][0,1,...,(ny-1)].
  * 
  * nt = number of elements
  * nx = number of elements  
  * ny = number of elements 
  *
- * returns: return the posize_ter to the array allocation 
+ * returns: return the pounsigned longer to the array allocation 
  *          returns NULL on error (if it is out of memory)
  */
 {
-  size_t ***array;
-  size_t t,i;
+  unsigned long ***array;
+  unsigned long t,i;
 
-  array =(size_t ***)malloc(nt*sizeof(size_t **));
+  array =(unsigned long ***)malloc(nt*sizeof(unsigned long **));
   if(array == NULL)
     {
       printf("out of memory\n");
@@ -535,7 +535,7 @@ size_t*** mkstarray3D(size_t nt, size_t nx, size_t ny)
     }
   for(t = 0; t < nt; t++)
     {
-      array[t] = (size_t **)malloc(nx*sizeof(size_t*));
+      array[t] = (unsigned long **)malloc(nx*sizeof(unsigned long*));
       if(array[t] == NULL)
 	{
 	  printf("out of memory\n");
@@ -543,7 +543,7 @@ size_t*** mkstarray3D(size_t nt, size_t nx, size_t ny)
 	}
       for(i = 0; i < nx; i++)
 	{
-	  array[t][i] = (size_t *)malloc(ny*sizeof(size_t));
+	  array[t][i] = (unsigned long *)malloc(ny*sizeof(unsigned long));
 	  if(array[t][i] == NULL)
 	    {
 	      printf("out of memory\n");
@@ -554,25 +554,25 @@ size_t*** mkstarray3D(size_t nt, size_t nx, size_t ny)
   return array;
 }
 
-size_t**** mkstarray4D(size_t nt, size_t nx, size_t ny, size_t nz)
+unsigned long**** mkularray4D(unsigned long nt, unsigned long nx, unsigned long ny, unsigned long nz)
 /* Function: mkstarray4D
  * --------------------
  * 
- * Allocates a size_t array with range [0,1,...,(nt-1)][0,1,...,(nx-1)][0,1,...,(ny-1)][0,1,...,(nz-1)].
+ * Allocates a unsigned long array with range [0,1,...,(nt-1)][0,1,...,(nx-1)][0,1,...,(ny-1)][0,1,...,(nz-1)].
  * 
  * nt = number of elements
  * nx = number of elements  
  * ny = number of elements 
  * nz = number of elements 
  *
- * returns: return the posize_ter to the array allocation 
+ * returns: return the pounsigned longer to the array allocation 
  *          returns NULL on error (if it is out of memory)
  */
 {
-  size_t ****array;
-  size_t t,i,j;
+  unsigned long ****array;
+  unsigned long t,i,j;
 
-  array =(size_t ****)malloc(nt * sizeof(size_t ***));
+  array =(unsigned long ****)malloc(nt * sizeof(unsigned long ***));
   if(array == NULL)
     {
       printf("out of memory\n");
@@ -580,7 +580,7 @@ size_t**** mkstarray4D(size_t nt, size_t nx, size_t ny, size_t nz)
     }
   for(t = 0; t < nt; t++)
     {
-      array[t] = (size_t ***)malloc(nx * sizeof(size_t **));
+      array[t] = (unsigned long ***)malloc(nx * sizeof(unsigned long **));
       if(array[t] == NULL)
 	{
 	  printf("out of memory\n");
@@ -588,7 +588,7 @@ size_t**** mkstarray4D(size_t nt, size_t nx, size_t ny, size_t nz)
 	}
       for(i = 0; i < nx; i++)
 	{
-	  array[t][i] = (size_t **)malloc(ny * sizeof(size_t *));
+	  array[t][i] = (unsigned long **)malloc(ny * sizeof(unsigned long *));
 	  if(array[t][i] == NULL)
 	    {
 	      printf("out of memory\n");
@@ -596,7 +596,7 @@ size_t**** mkstarray4D(size_t nt, size_t nx, size_t ny, size_t nz)
 	    }
 	  for(j=0; j<ny; j++)
 	    {
-	      array[t][i][j] = (size_t *)malloc(nz * sizeof(size_t ));
+	      array[t][i][j] = (unsigned long *)malloc(nz * sizeof(unsigned long ));
 	      if(array[t][i][j] == NULL)
 		{
 		  printf("out of memory\n");
@@ -608,7 +608,7 @@ size_t**** mkstarray4D(size_t nt, size_t nx, size_t ny, size_t nz)
   return array;
 }
 
-void freestarray1D(size_t* array)
+void freeularray1D(unsigned long* array)
 /* Function: freestarray1D
  * -----------------------
  * 
@@ -619,7 +619,7 @@ void freestarray1D(size_t* array)
   free(array);
 }
 
-void freestarray2D(size_t** array, size_t nt)
+void freeularray2D(unsigned long** array, unsigned long nt)
 /* Function: freestarray2D
  * -----------------------
  * 
@@ -627,7 +627,7 @@ void freestarray2D(size_t** array, size_t nt)
  * 
  */
 {
-  size_t t;
+  unsigned long t;
 
   for (t = 0; t < nt; ++t) 
     free(array[t]);
@@ -635,7 +635,7 @@ void freestarray2D(size_t** array, size_t nt)
   free(array);
 }
 
-void freestarray3D(size_t*** array, size_t nt, size_t nx)
+void freeularray3D(unsigned long*** array, unsigned long nt, unsigned long nx)
 /* Function: freestarray3D
  * -----------------------
  * 
@@ -643,7 +643,7 @@ void freestarray3D(size_t*** array, size_t nt, size_t nx)
  * 
  */
 {
-  size_t t,i;
+  unsigned long t,i;
 
   for (t = 0; t < nt; ++t) 
     {
@@ -655,7 +655,7 @@ void freestarray3D(size_t*** array, size_t nt, size_t nx)
     }
     free(array);
 }
-void freesize_t_array4D(size_t**** array, size_t nt, size_t nx, size_t ny)
+void freeularray4D(unsigned long**** array, unsigned long nt, unsigned long nx, unsigned long ny)
 /* Function: freestarray4D
  * -----------------------
  * 
@@ -663,7 +663,7 @@ void freesize_t_array4D(size_t**** array, size_t nt, size_t nx, size_t ny)
  * 
  */
 {
-  size_t t,i,j;
+  unsigned long t,i,j;
 
   for (t = 0; t < nt; ++t) 
     {
@@ -678,7 +678,7 @@ void freesize_t_array4D(size_t**** array, size_t nt, size_t nx, size_t ny)
     free(array);
 }
 
-vector* mkvarray1D(size_t nt)
+vector* mkvarray1D(unsigned long nt)
 /* Function: mkiarray1D
  * --------------------
  * 
@@ -701,7 +701,7 @@ vector* mkvarray1D(size_t nt)
   return array;
 }
 
-vector** mkvarray2D(size_t nt, size_t nx)
+vector** mkvarray2D(unsigned long nt, unsigned long nx)
 /* Function: mkiarray2D
  * --------------------
  * 
@@ -715,7 +715,7 @@ vector** mkvarray2D(size_t nt, size_t nx)
  */
 {
   vector **array;
-  size_t t;
+  unsigned long t;
 
   array =(vector **)malloc(nt*sizeof(vector *));
   if(array == NULL)
@@ -735,7 +735,7 @@ vector** mkvarray2D(size_t nt, size_t nx)
   return array;
 }
 
-vector*** mkvarray3D(size_t nt, size_t nx, size_t ny)
+vector*** mkvarray3D(unsigned long nt, unsigned long nx, unsigned long ny)
 /* Function: mkvarray3D
  * --------------------
  * 
@@ -750,7 +750,7 @@ vector*** mkvarray3D(size_t nt, size_t nx, size_t ny)
  */
 {
   vector ***array;
-  size_t t,i;
+  unsigned long t,i;
 
   array =(vector ***)malloc(nt*sizeof(vector **));
   if(array == NULL)
@@ -779,7 +779,7 @@ vector*** mkvarray3D(size_t nt, size_t nx, size_t ny)
   return array;
 }
 
-vector**** mkvarray4D(size_t nt, size_t nx, size_t ny, size_t nz)
+vector**** mkvarray4D(unsigned long nt, unsigned long nx, unsigned long ny, unsigned long nz)
 /* Function: mkvarray4D
  * --------------------
  * 
@@ -795,7 +795,7 @@ vector**** mkvarray4D(size_t nt, size_t nx, size_t ny, size_t nz)
  */
 {
   vector ****array;
-  size_t t,i,j;
+  unsigned long t,i,j;
 
   array =(vector ****)malloc(nt * sizeof(vector ***));
   if(array == NULL)
@@ -844,7 +844,7 @@ void freevarray1D(vector* array)
   free(array);
 }
 
-void freevarray2D(vector** array, size_t nt)
+void freevarray2D(vector** array, unsigned long nt)
 /* Function: freevarray2D
  * -----------------------
  * 
@@ -852,7 +852,7 @@ void freevarray2D(vector** array, size_t nt)
  * 
  */
 {
-  size_t t;
+  unsigned long t;
 
   for (t = 0; t < nt; ++t) 
     free(array[t]);
@@ -860,7 +860,7 @@ void freevarray2D(vector** array, size_t nt)
   free(array);
 }
 
-void freevarray3D(vector*** array, size_t nt, size_t nx)
+void freevarray3D(vector*** array, unsigned long nt, unsigned long nx)
 /* Function: freevarray3D
  * -----------------------
  * 
@@ -868,7 +868,7 @@ void freevarray3D(vector*** array, size_t nt, size_t nx)
  * 
  */
 {
-  size_t t,i;
+  unsigned long t,i;
 
   for (t = 0; t < nt; ++t) 
     {
@@ -880,7 +880,7 @@ void freevarray3D(vector*** array, size_t nt, size_t nx)
     }
     free(array);
 }
-void freevarray4D(vector**** array, size_t nt, size_t nx, size_t ny)
+void freevarray4D(vector**** array, unsigned long nt, unsigned long nx, unsigned long ny)
 /* Function: freevarray4D
  * -----------------------
  * 
@@ -888,7 +888,7 @@ void freevarray4D(vector**** array, size_t nt, size_t nx, size_t ny)
  * 
  */
 {
-  size_t t,i,j;
+  unsigned long t,i,j;
 
   for (t = 0; t < nt; ++t) 
     {

@@ -15,10 +15,10 @@ typedef struct{
 
 /*PARAMETERS */
 parameter_st param[]={
-  { "year_start", "int", NULL },
-  { "month_start", "int", NULL },
-  { "day_start", "int", NULL },
-  { "period", "int", NULL },
+  { "year_start", "unsigned long", NULL },
+  { "month_start", "unsigned int", NULL },
+  { "day_start", "unsigned int", NULL },
+  { "period", "unsigned long", NULL },
   { "pathroms", "char", NULL },
   { "iptfile", "char", NULL }
 }; 
@@ -27,10 +27,10 @@ int np = sizeof(param)/sizeof(parameter_st);
 date dstart;  
 int period;   
 char *pathroms; 
-<<<<<<< HEAD
+
 char *iptfile;
-=======
->>>>>>> 0620b781bbf361796d2bd25fd82736a91da2a57e
+
+
 
 void listofparameters(void )
 {
@@ -116,15 +116,10 @@ int readinparameters(FILE *input)
 	pathroms = param[i].value; 
       else if(strcmp(param[i].name,"iptfile")==0)
 	iptfile = param[i].value; 
-      else
+      else 
 	{
 	      printf("Unknown parameter\n");
 	      return 1;	    
-	}
-      else
-	{
-	  printf("Unknown parameter\n");
-	  return 1;
 	}
     }
 

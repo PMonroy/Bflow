@@ -6,24 +6,70 @@
 
 #include "velocity.h"
 #include "memalloc.h"
+#include "locate.h"
 
 typedef struct ncdim_st{
   char name[NC_MAX_NAME+1];
   size_t length;
 } ncdim;
 
-//Extern variables
-extern date dstart;   // nº 0, 1, 2 
-extern int period;    // nº 3
-extern char *pathroms;  // nº 4
+//Parameters: Extern variables
+extern date dstart; 
+extern int period;  
+extern char *pathroms; 
 
 //Global variables 
 double *mu;
 double *phi;
+double *theta;
 double ****dpt;
 vector ****vroms;
-size_t tmax, smax, ximax, xiumax, etamax, etavmax;
+unsigned long tmax, smax, ximax, xiumax, etamax, etavmax;
+unsigned long *xib, *etab, ****sb;
 
+//Prototypes functions
+void print_error(int ncf);
+int ncdump(void );
+int locate_slot(unsigned long time, unsigned long q, sph_coord pt);
+int huntbox(unsigned long time, unsigned long q, hom_coord pt);
+
+int init_velocity(unsigned long np, sph_coord *pt)
+{
+  unsigned long q;
+
+  if(ncdump())
+    return 1;
+
+  if((xib = mkularray1D(np)) == NULL)
+    return 1;
+  if((etab =  mkularray1D(np)) == NULL)
+    return 1;
+  if((sb = mkularray4D(np,2,2,2)) == NULL)
+    return 1;
+  
+  for(q=0; q<np; q++)
+    {
+      if(locate_slot(0, q, pt[q]))
+	return 1;
+    }
+  return 0;
+}
+
+void reset_velocity(unsigned long np)
+{
+  
+  /* Free grid variables and ROMS velocity*/
+  freedarray1D(mu);
+  freedarray1D(theta);
+  freedarray1D(phi);
+  freedarray4D(dpt,period, ximax, etamax);
+  freevarray4D(vroms,period, ximax, etamax);
+
+  /* Free slot indices */
+  freeularray1D(xib);
+  freeularray1D(etab);
+  freeularray4D(sb,np,2,2);
+}
 
 
 void print_error(int ncf)
@@ -55,11 +101,11 @@ int ncdump(void )
   static size_t countv4D[4];
   static ptrdiff_t stride4D[4];
 
-  int count, sum_count;
+  unsigned long count, sum_count;
   int ncflag; //Error handling.
 
-  int i, s, xi, eta; //Loop index
-  int t, tstart, tend;
+  int i; 
+  unsigned long t, tstart, tend;
   date tdate;
 
   double *lon;
@@ -68,12 +114,13 @@ int ncdump(void )
   double *u;
   double *v;
   double *w;
-  
-  size_t nrho, nu, nv;
-  int sml, ml, smlu, mlu, smvl, mvl;
+
+  unsigned long  s, xi, eta; //Loop index  
+  unsigned long nrho, nu, nv;
+  unsigned long sml, ml, smlu, mlu, smvl, mvl;
 
   /* Open the nc file at initial date */
-  sprintf(ncfile,"%sextract_roms_avg_Y%dM%d.nc.1", pathroms, dstart.year, dstart.month);  
+  sprintf(ncfile,"%sextract_roms_avg_Y%luM%u.nc.1", pathroms, dstart.year, dstart.month);  
   if((ncflag = nc_open(ncfile, NC_NOWRITE, &ncID)))
     {
       print_error(ncflag);
@@ -124,9 +171,9 @@ int ncdump(void )
    start2D[1] = 0; 
 
    count2DLON[0] = 1;
-   count2DLON[1] = ximax;
+   count2DLON[1] = (size_t) ximax;
 
-   count2DLAT[0] = etamax;
+   count2DLAT[0] = (size_t) etamax;
    count2DLAT[1] = 1;
 
    stride2D[0] = 1;
@@ -138,19 +185,19 @@ int ncdump(void )
    start4D[3] = 0;
 
    count4D[0] = 0;
-   count4D[1] = smax;
-   count4D[2] = etamax;
-   count4D[3] = ximax;
+   count4D[1] = (size_t) smax;
+   count4D[2] = (size_t) etamax;
+   count4D[3] = (size_t) ximax;
 
    countu4D[0] = 0;
-   countu4D[1] = smax;
-   countu4D[2] = etamax;
-   countu4D[3] = xiumax;
+   countu4D[1] = (size_t) smax;
+   countu4D[2] = (size_t) etamax;
+   countu4D[3] = (size_t) xiumax;
 
    countv4D[0] = 0;
-   countv4D[1] = smax;
-   countv4D[2] = etavmax;
-   countv4D[3] = ximax;
+   countv4D[1] = (size_t) smax;
+   countv4D[2] = (size_t) etavmax;
+   countv4D[3] = (size_t) ximax;
 
    stride4D[0] = 1;
    stride4D[1] = 1;
@@ -200,6 +247,8 @@ int ncdump(void )
 
   if((mu = mkdarray1D(etamax)) == NULL)
       return 1;
+  if((theta = mkdarray1D(etamax)) == NULL)
+      return 1;
 
   for(xi=0; xi<ximax; xi++)
     {
@@ -207,7 +256,8 @@ int ncdump(void )
     }
   for(eta = 0; eta < etamax; eta++)
     {
-      mu[eta] = MU(RADS(lat[eta]));
+      theta[eta] = RADS(lat[eta]);
+      mu[eta] = MU(theta[eta]);
     }
 
   freedarray1D(lon);
@@ -231,7 +281,6 @@ int ncdump(void )
   sml = smax*etamax*ximax;
   ml = etamax*ximax;
 
- 
   smlu = smax*etamax*xiumax;
   mlu = etamax*xiumax;
 
@@ -260,7 +309,7 @@ int ncdump(void )
       /* Open the file. NC_NOWRITE tells netCDF we want read-only access
        * to the file.
        */
-      sprintf(ncfile,"%sextract_roms_avg_Y%dM%d.nc.1", pathroms, tdate.year, tdate.month);       
+      sprintf(ncfile,"%sextract_roms_avg_Y%luM%u.nc.1", pathroms, tdate.year, tdate.month);       
       if ((ncflag = nc_open(ncfile, NC_NOWRITE, &ncID)))
 	{
 	  print_error(ncflag);
@@ -351,10 +400,90 @@ int ncdump(void )
   return 0;
 }
 
-void resetgrid(void )
-{  
-  freedarray1D(mu);
-  freedarray1D(phi);
-  freedarray4D(dpt,period, ximax, etamax);
-  freevarray4D(vroms,period, ximax, etamax);
+int locate_slot(unsigned long time, unsigned long q, sph_coord pt)
+{
+
+  double *pphi, *ttheta,*ddpt ;
+  unsigned long xib_1offset, etab_1offset, sb_1offset;
+  int h,i,j;
+
+  /* Locate xib*/
+  pphi = phi - 1;
+  locate(pphi, ximax, pt.phi, &xib_1offset);
+  if(xib_1offset == 0 || xib_1offset == ximax)
+    return 1;
+  else
+    xib[q] = xib_1offset - 1;
+
+  /* Locate etab*/
+  ttheta = theta - 1;
+  locate(ttheta, etamax, pt.theta, &etab_1offset);
+  if(etab_1offset == 0 || etab_1offset == etamax)
+    return 1;
+  else
+    etab[q] = etab_1offset - 1;
+
+  /* Locate sb */
+  for(h = 0; h < 2; h++)
+    {
+      for(i = 0; i < 2; i++)
+	{
+	  for(j = 0; j < 2; j++)
+	    {
+	      ddpt = dpt[time+h][xib[q]+i][etab[q]+j] - 1;
+	      locate(ddpt, smax, pt.dpt, &sb_1offset);	     
+	      if(sb_1offset == 0 || sb_1offset == smax)
+		return 1;
+	      else
+		sb[q][h][i][j] = sb_1offset - 1;
+	    }
+	}
+    }
+ 
+  return 0;
+}
+
+int huntbox(unsigned long time, unsigned long q, hom_coord pt)
+{
+
+  double *pphi, *mmu,*ddpt ;
+  unsigned long xib_1offset, etab_1offset, sb_1offset;
+  int h,i,j;
+
+  /* Locate xib*/
+  pphi = phi - 1;
+  xib_1offset = xib[q] + 1;
+  hunt(pphi, ximax, pt.phi, &xib_1offset);
+  if(xib_1offset == 0 || xib_1offset == ximax)
+    return 1;
+  else
+    xib[q] = xib_1offset - 1;
+
+  /* Locate etab*/
+  mmu = mu - 1;
+  etab_1offset = etab[q] + 1;
+  hunt(mmu, etamax, pt.mu, &etab_1offset);
+  if(etab_1offset == 0 || etab_1offset == etamax)
+    return 1;
+  else
+    etab[q] = etab_1offset - 1;
+  
+  /* Locate sb */
+  for(h = 0; h < 2; h++)
+    {
+      for(i = 0; i < 2; i++)
+	{
+	  for(j = 0; j < 2; j++)
+	    {
+	      ddpt = dpt[time+h][xib[q]+i][etab[q]+j] - 1;
+	      sb_1offset = sb[q][h][i][j] + 1;
+	      hunt(ddpt, smax, pt.dpt, &sb_1offset);	     
+	      if(sb_1offset == 0 || sb_1offset == smax)
+		return 1;
+	      else
+		  sb[q][h][i][j] = sb_1offset - 1;
+	    }
+	}
+    }
+  return 0;
 }

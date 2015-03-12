@@ -6,5 +6,8 @@ extern double *phi;
 extern double ****dpt;
 extern vector ****vroms;
 
-int ncdump(void );
-void resetgrid(void);
+
+
+int init_velocity(unsigned long np, sph_coord *pt);
+void reset_velocity(unsigned long np);
+

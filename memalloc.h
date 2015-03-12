@@ -4,46 +4,46 @@
 #include "coordinates.h"
 
 /* Functions for allocate a double arrays*/ 
-double* mkdarray1D(size_t nt);
-double** mkdarray2D(size_t nt, size_t nx);
-double*** mkdarray3D(size_t nt, size_t nx, size_t ny);
-double**** mkdarray4D(size_t nt, size_t nx, size_t ny, size_t nz);
+double* mkdarray1D(unsigned long nt);
+double** mkdarray2D(unsigned long nt, unsigned long nx);
+double*** mkdarray3D(unsigned long nt, unsigned long nx, unsigned long ny);
+double**** mkdarray4D(unsigned long nt, unsigned long nx, unsigned long ny, unsigned long nz);
 
 void freedarray1D(double* array);
-void freedarray2D(double** array, size_t nt);
-void freedarray3D(double*** array, size_t nt, size_t nx);
-void freedarray4D(double**** array, size_t nt, size_t nx, size_t ny);
+void freedarray2D(double** array, unsigned long nt);
+void freedarray3D(double*** array, unsigned long nt, unsigned long nx);
+void freedarray4D(double**** array, unsigned long nt, unsigned long nx, unsigned long ny);
 
 /* Functions for allocate a int arrays*/ 
-int* mkiarray1D(size_t nt);
-int** mkiarray2D(size_t nt, size_t nx);
-int*** mkiarray3D(size_t nt, size_t nx, size_t ny);
-int**** mkiarray4D(size_t nt, size_t nx, size_t ny, size_t nz);
+int* mkiarray1D(unsigned long nt);
+int** mkiarray2D(unsigned long nt, unsigned long nx);
+int*** mkiarray3D(unsigned long nt, unsigned long nx, unsigned long ny);
+int**** mkiarray4D(unsigned long nt, unsigned long nx, unsigned long ny, unsigned long nz);
 
 void freeiarray1D(int* array);
-void freeiarray2D(int** array, size_t nt);
-void freeiarray3D(int*** array, size_t nt, size_t nx);
-void freeiarray4D(int**** array, size_t nt, size_t nx, size_t ny);
+void freeiarray2D(int** array, unsigned long nt);
+void freeiarray3D(int*** array, unsigned long nt, unsigned long nx);
+void freeiarray4D(int**** array, unsigned long nt, unsigned long nx, unsigned long ny);
 
-/* Functions for allocate a size_t arrays*/ 
-size_t* mkstarray1D(size_t nt);
-size_t** mkstarray2D(size_t nt, size_t nx);
-size_t*** mkstarray3D(size_t nt, size_t nx, size_t ny);
-size_t**** mkstarray4D(size_t nt, size_t nx, size_t ny, size_t nz);
+/* Functions for allocate a unsigned long arrays*/ 
+unsigned long* mkularray1D(unsigned long nt);
+unsigned long** mkularray2D(unsigned long nt, unsigned long nx);
+unsigned long*** mkularray3D(unsigned long nt, unsigned long nx, unsigned long ny);
+unsigned long**** mkularray4D(unsigned long nt, unsigned long nx, unsigned long ny, unsigned long nz);
 
-void freestarray1D(size_t* array);
-void freestarray2D(size_t** array, size_t nt);
-void freestarray3D(size_t*** array, size_t nt, size_t nx);
-void freestarray4D(size_t**** array, size_t nt, size_t nx, size_t ny);
+void freeularray1D(unsigned long* array);
+void freeularray2D(unsigned long** array, unsigned long nt);
+void freeularray3D(unsigned long*** array, unsigned long nt, unsigned long nx);
+void freeularray4D(unsigned long**** array, unsigned long nt, unsigned long nx, unsigned long ny);
 
 /* Functions for allocate a vector arrays*/ 
-vector* mkvarray1D(size_t nt);
-vector** mkvarray2D(size_t nt, size_t nx);
-vector*** mkvarray3D(size_t nt, size_t nx, size_t ny);
-vector**** mkvarray4D(size_t nt, size_t nx, size_t ny, size_t nz);
+vector* mkvarray1D(unsigned long nt);
+vector** mkvarray2D(unsigned long nt, unsigned long nx);
+vector*** mkvarray3D(unsigned long nt, unsigned long nx, unsigned long ny);
+vector**** mkvarray4D(unsigned long nt, unsigned long nx, unsigned long ny, unsigned long nz);
 
 void freevarray1D(vector* array);
-void freevarray2D(vector** array, size_t nt);
-void freevarray3D(vector*** array, size_t nt, size_t nx);
-void freevarray4D(vector**** array, size_t nt, size_t nx, size_t ny);
+void freevarray2D(vector** array, unsigned long nt);
+void freevarray3D(vector*** array, unsigned long nt, unsigned long nx);
+void freevarray4D(vector**** array, unsigned long nt, unsigned long nx, unsigned long ny);
 #endif

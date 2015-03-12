@@ -3,7 +3,10 @@
 
 #define SECONDS_DAY 86400.0
 
-typedef struct{int year, month, day;} date;
+typedef struct{
+  unsigned long year; 
+  unsigned int month, day;
+} date;
 
 #define TIME_TO_DATE(date,time)	     \
   date.year = (time) / 360;		     \

@@ -25,12 +25,12 @@ int main(int argc, char * argv[])
   FILE *input;
   
   FILE *ipt;
-  int np = 0;
+  unsigned long np = 0;
   char line[1024];
 
   geo_coord *geo_pt;
   sph_coord *sph_pt;
-  int q;
+  unsigned long q;
   
   // COMMAND LINE PARAMETERS
   me = argv[0];
@@ -76,7 +76,7 @@ int main(int argc, char * argv[])
   while(fgets(line,sizeof(line),ipt) != NULL)
     np++;
 
-  printf("number of points %d\n",np);
+  printf("number of points %lu\n",np);
   
   geo_pt=(geo_coord *) malloc(np*sizeof(geo_coord));
   if(geo_pt == NULL)
@@ -99,12 +99,16 @@ int main(int argc, char * argv[])
     }
   fclose(ipt);
 
-  //Ïnitialize velocity module
-  if(ncdump())
+  /* Initialize velocity module */
+  if(init_velocity(np, sph_pt))
     return 1;
 
+  /* Reset velocity module */
+  reset_velocity(np);
 
-  //Reset velocity module
-  resetgrid();
-  return 1;
+  /* Free position vectors of particles */
+  free(geo_pt);
+  free(sph_pt);
+
+  return 0;
 }
