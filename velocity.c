@@ -68,8 +68,8 @@ void reset_velocity(unsigned long np)
   freedarray1D(mu);
   freedarray1D(theta);
   freedarray1D(phi);
-  freedarray4D(dpt,period, ximax, etamax);
-  freevarray4D(vroms,period, ximax, etamax);
+  freedarray4D(dpt,period+1, ximax, etamax);
+  freevarray4D(vroms,period+1, ximax, etamax);
 
   /* Free slot indices */
   freeularray1D(xib);
