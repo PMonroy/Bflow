@@ -14,10 +14,10 @@ void hunt(double *xx, unsigned long n, double x, unsigned long *jlo)
     jhi=n+1;
   } else {
     inc=1;
-    if (x >= xx[*jlo] == ascnd) {
+    if ((x >= xx[*jlo]) == ascnd) {
       if (*jlo == n) return;
       jhi=(*jlo)+1;
-      while (x >= xx[jhi] == ascnd) {
+      while ((x >= xx[jhi]) == ascnd) {
 	*jlo=jhi;
 	inc += inc;
 	jhi=(*jlo)+inc;
@@ -32,7 +32,7 @@ void hunt(double *xx, unsigned long n, double x, unsigned long *jlo)
 	return;
       }
       jhi=(*jlo)--;
-      while (x < xx[*jlo] == ascnd) {
+      while ((x < xx[*jlo]) == ascnd) {
 	jhi=(*jlo);
 	inc <<= 1;
 	if (inc >= jhi) {
@@ -43,9 +43,9 @@ void hunt(double *xx, unsigned long n, double x, unsigned long *jlo)
       }
     }
   }
-  while (jhi-(*jlo) != 1) {
+  while ((jhi-(*jlo)) != 1) {
       jm=(jhi+(*jlo)) >> 1;
-      if (x >= xx[jm] == ascnd)
+      if ((x >= xx[jm]) == ascnd)
 	*jlo=jm;
       else
 	jhi=jm;
@@ -68,10 +68,10 @@ void locate(double xx[], unsigned long n, double x, unsigned long *j)
   jl=0;
   ju=n+1;
   ascnd=(xx[n] > xx[1]);
-  while (ju-jl > 1) 
+  while ((ju-jl) > 1) 
     {
     jm=(ju+jl) >> 1;
-    if (x > xx[jm] == ascnd)
+    if ((x > xx[jm]) == ascnd)
       jl=jm;
     else
       ju=jm;
