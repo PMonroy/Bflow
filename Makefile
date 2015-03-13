@@ -7,8 +7,8 @@ PARAMS=parameters.in
 
 all: build
 
-build: pttraj.o memalloc.o velocity.o parameters.o $(PARAMS) locate.o
-	$(CC) $(CFLAGS) -o $(OUT) pttraj.o memalloc.o velocity.o parameters.o locate.o $(LIBS)
+build: pttraj.o memalloc.o velocity.o parameters.o tracer.o $(PARAMS) locate.o
+	$(CC) $(CFLAGS) -o $(OUT) pttraj.o memalloc.o velocity.o parameters.o tracer.o locate.o $(LIBS)
 	$(RM) *.o
 
 debug: CFLAGS+=-DDEBUG_ON
@@ -28,6 +28,9 @@ parameters.o: parameters.c parameters.h date.h
 
 memalloc.o: memalloc.c memalloc.h
 	$(CC) $(CFLAGS) -c memalloc.c
+
+tracer.o: tracer.c tracer.h
+	$(CC) $(CFLAGS) -c tracer.c
 
 $(PARAMS): parameters.template
 	touch $(PARAMS)

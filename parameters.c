@@ -19,15 +19,16 @@ parameter_st param[]={
   { "month_start", "unsigned int", NULL },
   { "day_start", "unsigned int", NULL },
   { "period", "unsigned long", NULL },
+  { "time_step", "double", NULL },
   { "pathroms", "char", NULL },
   { "iptfile", "char", NULL }
 }; 
 int np = sizeof(param)/sizeof(parameter_st);
 
 date dstart;  
-int period;   
+unsigned long period;   
 char *pathroms; 
-
+double tstep;
 char *iptfile;
 
 
@@ -112,6 +113,8 @@ int readinparameters(FILE *input)
 	dstart.day = atoi(param[i].value); 
       else if(strcmp(param[i].name,"period")==0)
 	period = atoi(param[i].value); 
+      else if(strcmp(param[i].name,"time_step")==0)
+	tstep = atof(param[i].value); 
       else if(strcmp(param[i].name,"pathroms")==0)
 	pathroms = param[i].value; 
       else if(strcmp(param[i].name,"iptfile")==0)

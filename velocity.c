@@ -13,9 +13,15 @@ typedef struct ncdim_st{
   size_t length;
 } ncdim;
 
+//Macros:
+#define INTERPOLATION(xint, x, j, alpha, beta)	\
+  xint.u = alpha * x[(j)].u + beta * x[(j)+1].u; \
+  xint.v = alpha * x[(j)].v + beta * x[(j)+1].v; \
+  xint.w = alpha * x[(j)].w + beta * x[(j)+1].w	
+
 //Parameters: Extern variables
 extern date dstart; 
-extern int period;  
+extern unsigned long period;  
 extern char *pathroms; 
 
 //Global variables 
@@ -244,7 +250,6 @@ int ncdump(void )
   /* Transformation from lon[] lat[] to phi[] mu[]*/ 
   if((phi = mkdarray1D(ximax)) == NULL)
       return 1;
-
   if((mu = mkdarray1D(etamax)) == NULL)
       return 1;
   if((theta = mkdarray1D(etamax)) == NULL)
@@ -265,9 +270,9 @@ int ncdump(void )
 
   /* POINTS VARIBLES */
   
-  nrho = period*smax*etamax*ximax;
-  nu = period*smax*etamax*xiumax;
-  nv = period*smax*etavmax*ximax;
+  nrho = (period+1)*smax*etamax*ximax;
+  nu = (period+1)*smax*etamax*xiumax;
+  nv = (period+1)*smax*etavmax*ximax;
     
   if((depth = mkdarray1D(nrho)) == NULL)
     return 1;
@@ -288,7 +293,7 @@ int ncdump(void )
   mvl = etavmax*ximax;
  
   tstart = DATE_TO_TIME(dstart);
-  tend = tstart + period;
+  tend = tstart + (period + 1);
   t = tstart;
   sum_count = 0;
   while(t < tend)
@@ -374,9 +379,9 @@ int ncdump(void )
 
   /* Transformation variables */
 
-  dpt = mkdarray4D(period, ximax, etamax, smax);
-  vroms = mkvarray4D(period, ximax, etamax, smax);
-  for(t = 0; t < period; t++)
+  dpt = mkdarray4D(period+1, ximax, etamax, smax);
+  vroms = mkvarray4D(period+1, ximax, etamax, smax);
+  for(t = 0; t < period+1; t++)
     {
       for(xi = 0; xi < ximax; xi++)
 	{
@@ -388,6 +393,7 @@ int ncdump(void )
 		  vroms[t][xi][eta][s].w= *(w + t*sml+s*ml+ eta*ximax+ xi);
 		  vroms[t][xi][eta][s].u= (*(u + t*smlu+s*mlu+ eta*xiumax+ xi-(xi==(ximax-1)))+*(u + t*smlu+s*mlu+ eta*xiumax + xi-(xi!=0)))/2.0;
 		  vroms[t][xi][eta][s].v= (*(v + t*smvl+s*mvl+ (eta-(eta==(etamax-1)))*ximax+ xi)+*(v + t*smvl+s*mvl+ (eta-(eta!=0))*ximax + xi))/2.0;
+		  SCALAR_OP_VECTOR(vroms[t][xi][eta][s], SECONDS_DAY, *, vroms[t][xi][eta][s]); 
 		}
 	    }
 	}
@@ -485,5 +491,89 @@ int huntbox(unsigned long time, unsigned long q, hom_coord pt)
 	    }
 	}
     }
+  return 0;
+}
+
+int get_velocity(double t, unsigned long q, hom_coord pt, vector *vint)
+{
+  hom_coord ptb[16];
+  vector vb[16];
+  unsigned long time;
+  unsigned int index, contw;  
+  double alpha, beta;
+  unsigned long eta, xi, s; 
+  unsigned int h,i,j,k;
+
+  /* Calculates the vectors vb[15] and points ptmb[15] */
+  time = (unsigned long) t;
+  if(huntbox(time, q, pt))
+    return 1;
+  
+  /* Vectors and points with only one int index*/
+  index = contw = 0;
+  for(h = 0; h < 2; h++)
+    {
+      for(i=0; i < 2; i++)
+	{
+	  for(j = 0; j < 2; j++)
+	    {
+	      for(k = 0; k < 2; k++)
+		{
+		  xi = xib[q]+i;
+		  eta = etab[q]+j;
+		  s = sb[q][h][i][j]+k;
+
+		  ptb[index].phi = phi[xi];
+		  ptb[index].mu = mu[eta];
+		  ptb[index].dpt = dpt[time+h][xi][eta][s];
+
+		  vb[index] = vroms[time+h][xi][eta][s];
+
+		  if(vb[index].w==0)
+		    contw++;
+
+		  index++; 
+		}
+	    }
+	}
+    }
+  if(contw==16)
+    return 1;// The particle has reached the coast
+
+  /* Depth Interpolation: */
+  for(index=0; index<16; index=index+2)
+    {
+      alpha = (ptb[index+1].dpt - pt.dpt)/(ptb[index+1].dpt - ptb[index].dpt);
+      beta = 1 - alpha;
+      INTERPOLATION(vb[index/2], vb, index, alpha, beta);
+      ptb[index/2] = ptb[index]; 
+    }
+
+  /* Mu Interpolation: */
+  alpha = (ptb[1].mu - pt.mu)/(ptb[1].mu - ptb[0].mu);
+  beta = 1.0 - alpha;
+  for(index = 0; index < 8; index=index+2)
+    {
+      INTERPOLATION(vb[index/2], vb, index, alpha, beta);
+      ptb[index/2] = ptb[index];
+    }
+
+  /* Phi Interpolation */
+  alpha = (ptb[1].phi - pt.phi)/(ptb[1].phi - ptb[0].phi);
+  beta = 1.0 - alpha;
+  for(index = 0; index < 4; index=index+2)
+    {
+      INTERPOLATION(vb[index/2], vb, index, alpha, beta);
+      ptb[index/2] = ptb[index];
+    }
+
+  /* Time Interpolation: */ 
+  alpha = ((double) (time + 1)) - t;  
+  beta = 1.0 - alpha; 
+  INTERPOLATION(vb[0], vb, 0, alpha, beta);
+
+  /* Interpolated V*/
+  *vint = vb[0];
+
   return 0;
 }

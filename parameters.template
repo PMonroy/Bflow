@@ -2,14 +2,22 @@
 
 # start date 
 
-  year_start : 
-  month_start : 
-  day_start : 
+  year_start :
+  month_start :
+  day_start :
 
 # period of data
 
-  period : 
+  period :
+
+# Time step integration
+
+  time_step :
 
 # path to dir of ROMS files
 
   pathroms :
+
+# File of initial positions
+
+  iptfile :
