@@ -4,7 +4,7 @@
 
 #include "tracer.h"
 
-#define TRIAL_POINT(rtrial, r, alpha, vec)		  \
+#define TRIAL_POINT(rtrial, r, alpha, vec)	  \
   rtrial.phi = r.phi + (alpha) * vec.u;		  \
   rtrial.mu  = r.mu  + (alpha) * vec.v;		  \
   rtrial.dpt = r.dpt + (alpha) * vec.w
