@@ -77,4 +77,10 @@ typedef struct vector_st{
   y.w=alpha op x.w
 
 #define NORM(x) sqrt((x.u*x.u)+(x.v*x.v)+(x.w*x.w))
+
+#define PRODVEC(x,y,z)				\
+  x.u = y.v*z.w - y.w*z.v;			\
+  x.v = y.w*z.u - y.u*z.w;			\
+  x.w = y.u*z.v - y.v*z.u
+
 #endif

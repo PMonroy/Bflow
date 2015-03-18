@@ -1,3 +1,5 @@
+#define PTRACER
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
@@ -5,7 +7,7 @@
 
 #include "parameters.h"
 #include "coordinates.h"
-#include "tracer.h"
+#include "integration.h"
 
 extern char *iptfile;
 extern double tstep;
@@ -13,8 +15,8 @@ extern unsigned long period;
 
 void print_usage(char *me) 
 {
-  printf("\n Usage: \n\t %s -i file \n", me);
-  printf(" in the file there must be this parameters:\n");
+  printf("\n Usage: \n\t %s -i <file> \n", me);
+  printf(" In the <file> there must be these parameters:\n");
   listofparameters();
 }
 
@@ -68,7 +70,7 @@ int main(int argc, char * argv[])
 
   // READ PARAMETERS FROM A TEXT FILE
   input = fopen(ifilename, "r");
-  if(readinparameters(input))
+  if(readparams(input))
   {
     print_usage(me);
     return 1;

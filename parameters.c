@@ -14,6 +14,8 @@ typedef struct{
 } parameter_st;
 
 /*PARAMETERS */
+
+#ifdef PTRACER
 parameter_st param[]={
   { "year_start", "unsigned long", NULL },
   { "month_start", "unsigned int", NULL },
@@ -21,28 +23,43 @@ parameter_st param[]={
   { "period", "unsigned long", NULL },
   { "time_step", "double", NULL },
   { "pathroms", "char", NULL },
-  { "iptfile", "char", NULL }
+  { "iptfile", "char", NULL },
+};
+#endif
+
+#ifdef ITRACER
+parameter_st param[]={
+  { "year_start", "unsigned long", NULL },
+  { "month_start", "unsigned int", NULL },
+  { "day_start", "unsigned int", NULL },
+  { "period", "unsigned long", NULL },
+  { "time_step", "double", NULL },
+  { "pathroms", "char", NULL },
+  { "iptfile", "char", NULL },
+  { "gravity", "double", NULL },
+  { "vrotation_Earth", "double", NULL },
+  { "viscosity", "double", NULL },
+  { "radius", "double", NULL },
+  { "rho_f", "double", NULL },
+  { "rho_p", "double", NULL },
 }; 
-int np = sizeof(param)/sizeof(parameter_st);
+#endif
 
 date dstart;  
 unsigned long period;   
 char *pathroms; 
 double tstep;
 char *iptfile;
+double gravity;
+double omega;
+double viscosity;
+double rp;
+double rhof;
+double rhop;
 
+int np = sizeof(param)/sizeof(parameter_st);
 
-
-void listofparameters(void )
-{
-  int i;
-
-  printf(" (Name) (Type)\n");
-  for(i=0; i<np; i++)
-    printf(" %s : %s\n", param[i].name, param[i].type);
-}
-
-int readinparameters(FILE *input)
+int readparams(FILE *input)
 {
   char line[LONGSTRING]; 
   char name[SHORTSTRING], value[SHORTSTRING];
@@ -105,6 +122,29 @@ int readinparameters(FILE *input)
 	  printf("Parameter %s not defined\n", param[i].name);
 	  return 1;
 	}
+      #ifdef PTRACER
+      if(strcmp(param[i].name,"year_start")==0)
+	dstart.year = atoi(param[i].value); 
+      else if(strcmp(param[i].name,"month_start")==0)
+	dstart.month = atoi(param[i].value); 
+      else if(strcmp(param[i].name,"day_start")==0)
+	dstart.day = atoi(param[i].value); 
+      else if(strcmp(param[i].name,"period")==0)
+	period = atoi(param[i].value); 
+      else if(strcmp(param[i].name,"time_step")==0)
+	tstep = atof(param[i].value); 
+      else if(strcmp(param[i].name,"pathroms")==0)
+	pathroms = param[i].value; 
+      else if(strcmp(param[i].name,"iptfile")==0)
+	iptfile = param[i].value;
+      else 
+	{
+	      printf("Unknown parameter\n");
+	      return 1;
+	}
+      #endif
+
+      #ifdef ITRACER
       if(strcmp(param[i].name,"year_start")==0)
 	dstart.year = atoi(param[i].value); 
       else if(strcmp(param[i].name,"month_start")==0)
@@ -119,11 +159,24 @@ int readinparameters(FILE *input)
 	pathroms = param[i].value; 
       else if(strcmp(param[i].name,"iptfile")==0)
 	iptfile = param[i].value; 
+      else if(strcmp(param[i].name,"gravity")==0)
+	gravity = atof(param[i].value); 
+      else if(strcmp(param[i].name,"vrotation_Earth")==0)
+	omega = atof(param[i].value); 
+      else if(strcmp(param[i].name,"viscosity")==0)
+	viscosity = atof(param[i].value); 
+      else if(strcmp(param[i].name,"radius")==0)
+	rp = atof(param[i].value); 
+      else if(strcmp(param[i].name,"rho_f")==0)
+	rhof = atof(param[i].value); 
+      else if(strcmp(param[i].name,"rho_p")==0)
+	rhop = atof(param[i].value);
       else 
 	{
-	      printf("Unknown parameter\n");
-	      return 1;	    
+	  printf("Unknown parameter %s\n", param[i].name);
+	  return 1;
 	}
+      #endif
     }
 
   free(pflag);
@@ -131,3 +184,12 @@ int readinparameters(FILE *input)
   
   return 0;
 }
+void listofparameters(void )
+{
+  int i;
+
+  printf(" (Name) (Type)\n");
+  for(i=0; i<np; i++)
+    printf(" %s : %s\n", param[i].name, param[i].type);
+}
+

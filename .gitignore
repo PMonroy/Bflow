@@ -38,3 +38,8 @@
 # Data files
 
 *.dat
+
+# Executable
+
+ptracer
+itracer

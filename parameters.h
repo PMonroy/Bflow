@@ -1,2 +1,2 @@
 void listofparameters(void );
-int readinparameters(FILE *input);
+int readparams(FILE *input);
