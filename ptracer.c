@@ -12,6 +12,7 @@
 extern char *iptfile;
 extern double tstep;
 extern unsigned long period;
+extern double vsink;
 
 void print_usage(char *me) 
 {
@@ -104,7 +105,8 @@ int main(int argc, char * argv[])
     {
       if(fscanf(ipt,"%lf %lf %lf", &(geo_pt[q].lon), &(geo_pt[q].lat), &(geo_pt[q].dpt))==EOF)
 	{
-	  printf("incorrect number of lines in the file %s\n", iptfile);
+	  
+	  printf("incorrect number of lines %lu in the file %s\n", np, iptfile);
 	  return 1;
 	}
       GEO_TO_SPH_COORD(sph_pt[q],geo_pt[q]);
@@ -122,8 +124,8 @@ int main(int argc, char * argv[])
     printf("OK\n");
 
   /* Calculating trajectories */
-  
-  output = fopen("traj_t0.00.dat","w");
+
+  output = fopen("ptraj_t0.00.dat","w");
   for(q=0; q<np; q++)
     fprintf(output,"%lf %lf %lf\n", DEGREE(sph_pt[q].phi), DEGREE(sph_pt[q].theta), sph_pt[q].dpt);
 
@@ -132,12 +134,12 @@ int main(int argc, char * argv[])
   tmax = (double) (period-1);
   for(t=0; t<tmax; t=t + tstep)
     {
-      sprintf(nameout,"traj_t%.2f.dat",t+tstep);
+      sprintf(nameout,"ptraj_t%.2f.dat",t+tstep);
       output = fopen(nameout,"w");
       for(q=0; q<np; q++)
 	{
 	  if(outsider[q]==0)
-	    outsider[q]=rk4(t, tstep, 0, q, &sph_pt[q]);
+	    outsider[q]=rk4(t, tstep, vsink, q, &sph_pt[q]);
 	   
 	  fprintf(output,"%lf %lf %lf\n", DEGREE(sph_pt[q].phi), DEGREE(sph_pt[q].theta), sph_pt[q].dpt);
 	}

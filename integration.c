@@ -119,9 +119,9 @@ int inertial_rk4(double t, double tstep, double beta, double taup, unsigned long
   PRODVEC(acoriolis,vomega,v1);
 
   h = R_EARTH * cos(theta);
-  v1.u = (v1.u+ftau*acoriolis.u*SECONDS_DAY)/h; // rads velocity
-  v1.v = (v1.v+ftau*acoriolis.v*SECONDS_DAY)/h; // rads velocity
-  v1.w = v1.w+ftau*(acoriolis.w+gravity)*SECONDS_DAY;
+  v1.u = (v1.u-ftau*acoriolis.u*SECONDS_DAY)/h; // rads velocity
+  v1.v = (v1.v-ftau*acoriolis.v*SECONDS_DAY)/h; // rads velocity
+  v1.w = v1.w+ftau*(gravity-acoriolis.w)*SECONDS_DAY;
 
   /* Calculate V2: */
   tau = t + tstep2;  
@@ -137,9 +137,9 @@ int inertial_rk4(double t, double tstep, double beta, double taup, unsigned long
   PRODVEC(acoriolis,vomega,v2);
 
   h = R_EARTH * cos(theta);
-  v2.u = (v2.u+ftau*acoriolis.u*SECONDS_DAY)/h;
-  v2.v = (v2.v+ftau*acoriolis.v*SECONDS_DAY)/h;
-  v2.w = v2.w+ftau*(acoriolis.w+gravity)*SECONDS_DAY;
+  v2.u = (v2.u-ftau*acoriolis.u*SECONDS_DAY)/h;
+  v2.v = (v2.v-ftau*acoriolis.v*SECONDS_DAY)/h;
+  v2.w = v2.w+ftau*(gravity-acoriolis.w)*SECONDS_DAY;
 
   /* Calculate V3: */
   TRIAL_POINT(ptmu3, ptmu, tstep2, v2);
@@ -154,9 +154,9 @@ int inertial_rk4(double t, double tstep, double beta, double taup, unsigned long
   PRODVEC(acoriolis,vomega,v3);
 
   h = R_EARTH * cos(theta);
-  v3.u = (v3.u+ftau*acoriolis.u*SECONDS_DAY)/h;
-  v3.v = (v3.v+ftau*acoriolis.v*SECONDS_DAY)/h;
-  v3.w = v3.w+ftau*(acoriolis.w+gravity)*SECONDS_DAY;
+  v3.u = (v3.u-ftau*acoriolis.u*SECONDS_DAY)/h;
+  v3.v = (v3.v-ftau*acoriolis.v*SECONDS_DAY)/h;
+  v3.w = v3.w+ftau*(gravity-acoriolis.w)*SECONDS_DAY;
   
   /* Calculate V4: */
   tau = t + tstep;
@@ -172,9 +172,9 @@ int inertial_rk4(double t, double tstep, double beta, double taup, unsigned long
   PRODVEC(acoriolis,vomega,v4);
 
   h = R_EARTH * cos(theta);
-  v4.u = (v4.u+ftau*acoriolis.u*SECONDS_DAY)/h;
-  v4.v = (v4.v+ftau*acoriolis.v*SECONDS_DAY)/h;
-  v4.w = v4.w+ftau*(acoriolis.w+gravity)*SECONDS_DAY;
+  v4.u = (v4.u-ftau*acoriolis.u*SECONDS_DAY)/h;
+  v4.v = (v4.v-ftau*acoriolis.v*SECONDS_DAY)/h;
+  v4.w = v4.w+ftau*(gravity-acoriolis.w)*SECONDS_DAY;
 
   /* Calculate Final point */
   ptsphe->phi = ptmu.phi + tstep6 * (v1.u + v4.u + 2.0 * (v2.u + v3.u));

@@ -17,7 +17,7 @@ extern double viscosity;
 extern double rp;
 extern double rhof;
 extern double rhop;
-
+extern double gravity;
 
 void print_usage(char *me) 
 {
@@ -131,15 +131,16 @@ int main(int argc, char * argv[])
     printf("OK\n");
 
   /* Calculating trajectories */
-
   beta = (3.0*rhof)/(2.0*rhop+rhof);
-  taup = (rp*rp)/(3*beta*viscosity);
+  taup = (rp*rp)/(3.0*beta*viscosity);
   //taup = taup;
 
   printf("beta = %lf\n",beta);
   printf("taup = %lf\n",taup);
+  printf("vsink= %lf\n", taup*(beta-1.0)*gravity*SECONDS_DAY);
 
-  output = fopen("traj_t0.00.dat","w");
+
+  output = fopen("itraj_t0.00.dat","w");
   for(q=0; q<np; q++)
     fprintf(output,"%lf %lf %lf\n", DEGREE(sph_pt[q].phi), DEGREE(sph_pt[q].theta), sph_pt[q].dpt);
 
@@ -148,7 +149,7 @@ int main(int argc, char * argv[])
   tmax = (double) (period-1);
   for(t=0; t<tmax; t=t + tstep)
     {
-      sprintf(nameout,"traj_t%.2f.dat",t+tstep);
+      sprintf(nameout,"itraj_t%.2f.dat",t+tstep);
       output = fopen(nameout,"w");
       for(q=0; q<np; q++)
 	{
