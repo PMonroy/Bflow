@@ -12,12 +12,7 @@
 extern char *iptfile;
 extern double tstep;
 extern unsigned long period;
-extern double omega;
-extern double viscosity;
-extern double rp;
-extern double rhof;
-extern double rhop;
-extern double gravity;
+extern double vsink;
 
 void print_usage(char *me) 
 {
@@ -47,9 +42,6 @@ int main(int argc, char * argv[])
 
   char nameout[256]; 
   FILE *output;
-
-  double beta;
-  double taup;
 
   // COMMAND LINE PARAMETERS
   me = argv[0];
@@ -130,15 +122,7 @@ int main(int argc, char * argv[])
   else
     printf("OK\n");
 
-  /* Calculating trajectories */
-  beta = (3.0*rhof)/(2.0*rhop+rhof);
-  taup = (rp*rp)/(3.0*beta*viscosity);
-  //taup = taup;
-
-  printf("beta = %lf\n",beta);
-  printf("taup = %lf\n",taup);
-  printf("vsink= %lf\n", taup*(beta-1.0)*gravity*SECONDS_DAY);
-
+  /* Calculating trajectories*/
 
   output = fopen("itraj_t0.00.dat","w");
   for(q=0; q<np; q++)
@@ -147,19 +131,19 @@ int main(int argc, char * argv[])
   fclose(output);
 
   tmax = (double) (period-1);
-  for(t=0; t<tmax; t=t + tstep)
+  for(t=0; t<tmax; t=t+tstep)
     {
       sprintf(nameout,"itraj_t%.2f.dat",t+tstep);
       output = fopen(nameout,"w");
       for(q=0; q<np; q++)
 	{
 	  if(outsider[q]==0)
-	    outsider[q]=inertial_rk4(t, tstep, beta, taup, q, &sph_pt[q]);
+	    outsider[q]=inertial_rk4(t, tstep, vsink, q, &sph_pt[q]);
 	   
 	  fprintf(output,"%lf %lf %lf\n", DEGREE(sph_pt[q].phi), DEGREE(sph_pt[q].theta), sph_pt[q].dpt);
 	}
       fclose(output);
-      }
+    }
 
   /* Reset velocity module */
   reset_velocity(np);

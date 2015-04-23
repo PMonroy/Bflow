@@ -15,6 +15,7 @@ typedef struct{
 
 /*PARAMETERS */
 
+//via file parameters
 #ifdef PTRACER
 parameter_st param[]={
   { "year_start", "unsigned long", NULL },
@@ -34,15 +35,10 @@ parameter_st param[]={
   { "month_start", "unsigned int", NULL },
   { "day_start", "unsigned int", NULL },
   { "period", "unsigned long", NULL },
+  { "vsinking", "double", NULL },  
   { "time_step", "double", NULL },
   { "pathroms", "char", NULL },
   { "iptfile", "char", NULL },
-  { "gravity", "double", NULL },
-  { "vrotation_Earth", "double", NULL },
-  { "viscosity", "double", NULL },
-  { "radius", "double", NULL },
-  { "rho_f", "double", NULL },
-  { "rho_p", "double", NULL },
 }; 
 #endif
 
@@ -52,12 +48,8 @@ char *pathroms;
 double tstep;
 char *iptfile;
 double vsink;
-double gravity;
-double omega;
-double viscosity;
-double rp;
-double rhof;
-double rhop;
+double gravity=9.80665;
+double omega=7.2921e-5;
 
 int np = sizeof(param)/sizeof(parameter_st);
 
@@ -163,18 +155,8 @@ int readparams(FILE *input)
 	pathroms = param[i].value; 
       else if(strcmp(param[i].name,"iptfile")==0)
 	iptfile = param[i].value; 
-      else if(strcmp(param[i].name,"gravity")==0)
-	gravity = atof(param[i].value); 
-      else if(strcmp(param[i].name,"vrotation_Earth")==0)
-	omega = atof(param[i].value); 
-      else if(strcmp(param[i].name,"viscosity")==0)
-	viscosity = atof(param[i].value); 
-      else if(strcmp(param[i].name,"radius")==0)
-	rp = atof(param[i].value); 
-      else if(strcmp(param[i].name,"rho_f")==0)
-	rhof = atof(param[i].value); 
-      else if(strcmp(param[i].name,"rho_p")==0)
-	rhop = atof(param[i].value);
+      else if(strcmp(param[i].name,"vsinking")==0)
+	vsink = atof(param[i].value);
       else 
 	{
 	  printf("Unknown parameter %s\n", param[i].name);

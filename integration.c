@@ -82,20 +82,20 @@ int rk4(double t, double tstep, double ws, unsigned long q, sph_coord *ptsphe)
   return 0;
 }
 
-int inertial_rk4(double t, double tstep, double beta, double taup, unsigned long q, sph_coord *ptsphe)
+int inertial_rk4(double t, double tstep, double ws, unsigned long q, sph_coord *ptsphe)
 {
   hom_coord ptmu, ptmu2, ptmu3, ptmu4;
   vector v1,v2,v3,v4;
   vector vomega;
   vector acoriolis;
   double tstep2,tstep6;
+  double gamma;
   double tau;
-  double ftau;
   double theta;
   double mu;
   double h; // scale factor of equally spaced cordinate system
 
-  ftau=taup*(beta-1.0);
+  gamma=ws/(gravity*SECONDS_DAY);
   
   /* Transformation to equally space cordinates*/
   ptmu.phi = ptsphe->phi;
@@ -113,15 +113,15 @@ int inertial_rk4(double t, double tstep, double beta, double taup, unsigned long
   theta = ptsphe->theta;
 
   vomega.u = 0.0;
-  vomega.v = 2.0*omega*cos(theta);
-  vomega.w = 2.0*omega*sin(theta);
+  vomega.v = 2.0*omega*cos(theta)*SECONDS_DAY;
+  vomega.w = 2.0*omega*sin(theta)*SECONDS_DAY;
 
   PRODVEC(acoriolis,vomega,v1);
 
   h = R_EARTH * cos(theta);
-  v1.u = (v1.u-ftau*acoriolis.u*SECONDS_DAY)/h; // rads velocity
-  v1.v = (v1.v-ftau*acoriolis.v*SECONDS_DAY)/h; // rads velocity
-  v1.w = v1.w+ftau*(gravity-acoriolis.w)*SECONDS_DAY;
+  v1.u = (v1.u-gamma*acoriolis.u)/h; 
+  v1.v = (v1.v-gamma*acoriolis.v)/h; 
+  v1.w = v1.w+ws-gamma*acoriolis.w;
 
   /* Calculate V2: */
   tau = t + tstep2;  
@@ -131,15 +131,15 @@ int inertial_rk4(double t, double tstep, double beta, double taup, unsigned long
   theta = THETA(ptmu2.mu);
 
   vomega.u = 0.0;
-  vomega.v = 2.0*omega*cos(theta);
-  vomega.w = 2.0*omega*sin(theta);
+  vomega.v = 2.0*omega*cos(theta)*SECONDS_DAY;
+  vomega.w = 2.0*omega*sin(theta)*SECONDS_DAY;
 
   PRODVEC(acoriolis,vomega,v2);
 
   h = R_EARTH * cos(theta);
-  v2.u = (v2.u-ftau*acoriolis.u*SECONDS_DAY)/h;
-  v2.v = (v2.v-ftau*acoriolis.v*SECONDS_DAY)/h;
-  v2.w = v2.w+ftau*(gravity-acoriolis.w)*SECONDS_DAY;
+  v2.u = (v2.u-gamma*acoriolis.u)/h;
+  v2.v = (v2.v-gamma*acoriolis.v)/h;
+  v2.w = v2.w+ws-gamma*acoriolis.w;
 
   /* Calculate V3: */
   TRIAL_POINT(ptmu3, ptmu, tstep2, v2);
@@ -148,15 +148,15 @@ int inertial_rk4(double t, double tstep, double beta, double taup, unsigned long
   theta = THETA(ptmu3.mu);
 
   vomega.u = 0.0;
-  vomega.v = 2.0*omega*cos(theta);
-  vomega.w = 2.0*omega*sin(theta);
+  vomega.v = 2.0*omega*cos(theta)*SECONDS_DAY;
+  vomega.w = 2.0*omega*sin(theta)*SECONDS_DAY;
 
   PRODVEC(acoriolis,vomega,v3);
 
   h = R_EARTH * cos(theta);
-  v3.u = (v3.u-ftau*acoriolis.u*SECONDS_DAY)/h;
-  v3.v = (v3.v-ftau*acoriolis.v*SECONDS_DAY)/h;
-  v3.w = v3.w+ftau*(gravity-acoriolis.w)*SECONDS_DAY;
+  v3.u = (v3.u-gamma*acoriolis.u)/h;
+  v3.v = (v3.v-gamma*acoriolis.v)/h;
+  v3.w = v3.w+ws-gamma*acoriolis.w;
   
   /* Calculate V4: */
   tau = t + tstep;
@@ -166,15 +166,15 @@ int inertial_rk4(double t, double tstep, double beta, double taup, unsigned long
   theta = THETA(ptmu4.mu);
 
   vomega.u = 0.0;
-  vomega.v = 2.0*omega*cos(theta);
-  vomega.w = 2.0*omega*sin(theta);
+  vomega.v = 2.0*omega*cos(theta)*SECONDS_DAY;
+  vomega.w = 2.0*omega*sin(theta)*SECONDS_DAY;
 
   PRODVEC(acoriolis,vomega,v4);
 
   h = R_EARTH * cos(theta);
-  v4.u = (v4.u-ftau*acoriolis.u*SECONDS_DAY)/h;
-  v4.v = (v4.v-ftau*acoriolis.v*SECONDS_DAY)/h;
-  v4.w = v4.w+ftau*(gravity-acoriolis.w)*SECONDS_DAY;
+  v4.u = (v4.u-gamma*acoriolis.u)/h;
+  v4.v = (v4.v-gamma*acoriolis.v)/h;
+  v4.w = v4.w+ws-gamma*acoriolis.w;
 
   /* Calculate Final point */
   ptsphe->phi = ptmu.phi + tstep6 * (v1.u + v4.u + 2.0 * (v2.u + v3.u));
